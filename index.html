@@ -127,36 +127,83 @@
         .darkpsy {
             background-color: #9b59b6;
         }
+        
+        /* Estilo para bandeiras nos popups */
+        .country-flag {
+            width: 24px;
+            height: 16px;
+            margin-right: 10px;
+            vertical-align: middle;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+        }
+        
+        .festival-popup {
+            min-width: 250px;
+        }
+        
+        .festival-popup h3 {
+            margin: 0 0 12px;
+            color: #2575fc;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+        }
+        
+        .festival-info {
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+        
+        .festival-info strong {
+            color: #555;
+        }
+        
+        .status-active {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .status-inactive {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* Melhorias para os marcadores */
+        .custom-div-icon {
+            background: transparent;
+            border: none;
+        }
     </style>
 </head>
 <body>
     <div id="header">
-        <h1>Mapa Global de Festivais de Trance</h1>
-        <p>Explore festivais de trance ao redor do mundo</p>
+        <h1>🎵 Mapa Global de Festivais de Trance</h1>
+        <p>Explore festivais de trance ao redor do mundo com bandeiras dos países</p>
     </div>
     
     <div id="container">
         <div id="sidebar">
             <div class="filter-section">
-                <h3>Filtros</h3>
+                <h3>🎛️ Filtros</h3>
                 
                 <div class="filter-option">
                     <label>
                         <input type="checkbox" id="filter-active" checked>
-                        Festivais Ativos
+                        ✅ Festivais Ativos
                     </label>
                 </div>
                 
                 <div class="filter-option">
                     <label>
                         <input type="checkbox" id="filter-inactive">
-                        Festivais Inativos
+                        ❌ Festivais Inativos
                     </label>
                 </div>
             </div>
             
             <div class="filter-section">
-                <h3>Continentes</h3>
+                <h3>🌍 Continentes</h3>
                 <div class="filter-option">
                     <label>
                         <input type="checkbox" class="continent-filter" value="Europa" checked>
@@ -202,7 +249,7 @@
             </div>
             
             <div class="filter-section">
-                <h3>Vertente Principal</h3>
+                <h3>🎶 Vertente Principal</h3>
                 <div class="filter-option">
                     <label>
                         <input type="checkbox" class="genre-filter" value="Psytrance - multigênero" checked>
@@ -224,14 +271,14 @@
             </div>
             
             <div class="stats">
-                <h4>Estatísticas</h4>
+                <h4>📊 Estatísticas</h4>
                 <p>Total de Festivais: <span id="total-festivals">0</span></p>
                 <p>Festivais Ativos: <span id="active-festivals">0</span></p>
                 <p>Festivais Inativos: <span id="inactive-festivals">0</span></p>
             </div>
             
             <div class="legend">
-                <h4>Legenda</h4>
+                <h4>🎨 Legenda</h4>
                 <div class="legend-item">
                     <div class="legend-color psytrance-multigenero"></div>
                     <span>Psytrance - Multigênero</span>
@@ -254,7 +301,7 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     
     <script>
-        // Dados dos festivais (extraídos da planilha)
+        // Dados completos dos festivais
         const festivals = [
             { name: "Nataraja Festival", country: "França", continent: "Europa", genre: "Psytrance - multigênero", subgenres: "Full on, Prog, Night, Forest", status: "Ativo", lat: 46.0201, lng: 3.7616 },
             { name: "Nature Frequencies", country: "Alemanha", continent: "Europa", genre: "Psytrance - multigênero", subgenres: "Full on, Prog, Night, Forest", status: "Inativo", lat: 48.7904, lng: 11.4979 },
@@ -363,6 +410,62 @@
             { name: "Universal Frequencies", country: "Austrália", continent: "Oceania", genre: "Psytrance - multigênero", subgenres: "Full on, Prog, Night, Forest", status: "Ativo", lat: -31.979072, lng: 121.995408 }
         ];
 
+        // Mapeamento de países para códigos (para bandeiras)
+        const countryCodes = {
+            'Alemanha': 'de',
+            'França': 'fr',
+            'África do Sul': 'za',
+            'Suíça': 'ch',
+            'Costa Rica': 'cr',
+            'EUA': 'us',
+            'Canadá': 'ca',
+            'Brasil': 'br',
+            'Uruguai': 'uy',
+            'Perú': 'pe',
+            'México': 'mx',
+            'Bolívia': 'bo',
+            'Chile': 'cl',
+            'Equador': 'ec',
+            'Argentina': 'ar',
+            'Namíbia': 'na',
+            'Marrocos': 'ma',
+            'Índia': 'in',
+            'Nepal': 'np',
+            'Tunísia': 'tn',
+            'Portugal': 'pt',
+            'Espanha': 'es',
+            'Croácia': 'hr',
+            'Venezuela': 've',
+            'Guatemala': 'gt',
+            'Tailândia': 'th',
+            'Turquia': 'tr',
+            'China': 'cn',
+            'Cambodia': 'kh',
+            'Nova Zelândia': 'nz',
+            'Inglaterra': 'gb',
+            'Sérvia': 'rs',
+            'Grécia': 'gr',
+            'Panamá': 'pa',
+            'Noruega': 'no',
+            'Japão': 'jp',
+            'Romênia': 'ro',
+            'Hungria': 'hu',
+            'Austrália': 'au',
+            'Colômbia': 'co'
+        };
+
+        // URL base para as bandeiras - usando repositório público
+        const FLAG_BASE_URL = 'https://flagcdn.com/w40/';
+
+        // Função para obter URL da bandeira
+        function getFlagUrl(countryName) {
+            const code = countryCodes[countryName];
+            if (code) {
+                return `${FLAG_BASE_URL}${code}.png`;
+            }
+            return ''; // Retorna string vazia se não encontrar a bandeira
+        }
+
         // Inicializar o mapa
         const map = L.map('map').setView([20, 0], 2);
 
@@ -395,12 +498,9 @@
         function getFestivalIcon(festival) {
             const color = getGenreColor(festival.genre);
             
-            // Ícone diferente para festivais ativos vs inativos
-            const iconClass = festival.status === 'Ativo' ? 'fa-circle' : 'fa-times-circle';
-            
             return L.divIcon({
                 className: 'custom-div-icon',
-                html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>`,
+                html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
                 iconSize: [20, 20],
                 iconAnchor: [10, 10]
             });
@@ -439,15 +539,19 @@
                     icon: getFestivalIcon(festival)
                 });
                 
+                // Obter URL da bandeira
+                const flagUrl = getFlagUrl(festival.country);
+                const flagHtml = flagUrl ? `<img src="${flagUrl}" alt="${festival.country}" class="country-flag">` : '';
+                
                 // Adicionar popup com informações
                 marker.bindPopup(`
-                    <div style="min-width: 200px;">
-                        <h3 style="margin: 0 0 10px; color: #2575fc;">${festival.name}</h3>
-                        <p><strong>País:</strong> ${festival.country}</p>
-                        <p><strong>Continente:</strong> ${festival.continent}</p>
-                        <p><strong>Gênero:</strong> ${festival.genre}</p>
-                        <p><strong>Subgêneros:</strong> ${festival.subgenres}</p>
-                        <p><strong>Status:</strong> <span style="color: ${festival.status === 'Ativo' ? 'green' : 'red'}">${festival.status}</span></p>
+                    <div class="festival-popup">
+                        <h3>${flagHtml}${festival.name}</h3>
+                        <div class="festival-info"><strong>País:</strong> ${festival.country}</div>
+                        <div class="festival-info"><strong>Continente:</strong> ${festival.continent}</div>
+                        <div class="festival-info"><strong>Gênero:</strong> ${festival.genre}</div>
+                        <div class="festival-info"><strong>Subgêneros:</strong> ${festival.subgenres}</div>
+                        <div class="festival-info"><strong>Status:</strong> <span class="status-${festival.status === 'Ativo' ? 'active' : 'inactive'}">${festival.status}</span></div>
                     </div>
                 `);
                 
