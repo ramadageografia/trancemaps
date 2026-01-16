@@ -174,7 +174,38 @@
             background: transparent;
             border: none;
         }
-    </style>
+    </style>/
+    * Marcador circular com a bandeira */
+.flag-marker-container {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%; /* Faz o círculo */
+    overflow: hidden;   /* Esconde os cantos da bandeira quadrada */
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+}
+
+.flag-marker-container img {
+    height: 100%;
+    width: auto; /* Mantém a proporção da bandeira dentro do círculo */
+    object-fit: cover; /* Garante que a bandeira preencha o círculo */
+}
+
+/* Opcional: Pequeno ponto de cor para o gênero no canto do círculo */
+.genre-indicator {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid white;
+    z-index: 1000;
+}
 </head>
 <body>
     <div id="header">
@@ -494,13 +525,12 @@
             }
         }
 
-        // Função para obter ícone baseado no status
-       // Função para obter ícone baseado na bandeira e gênero
+        // Função para obter ícone circular com a bandeira e cor do gênero
 function getFestivalIcon(festival) {
     const flagUrl = getFlagUrl(festival.country);
     const color = getGenreColor(festival.genre);
     
-    // Se não encontrar a bandeira, usa o círculo padrão
+    // Se não houver bandeira, mantém o círculo colorido original
     if (!flagUrl) {
         return L.divIcon({
             className: 'custom-div-icon',
@@ -510,17 +540,19 @@ function getFestivalIcon(festival) {
         });
     }
 
-    // Retorna a bandeira como marcador com um ponto de cor no canto
+    // Retorna a bandeira circular com um indicador de gênero no canto
     return L.divIcon({
         className: 'custom-div-icon',
         html: `
-            <div style="position: relative; display: flex; align-items: center; justify-content: center;">
-                <img src="${flagUrl}" style="width: 28px; height: auto; border: 1px solid #333; border-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.4);">
-                <div style="position: absolute; bottom: -4px; right: -4px; width: 10px; height: 10px; background-color: ${color}; border-radius: 50%; border: 1.5px solid white; box-shadow: 0 0 2px rgba(0,0,0,0.5);"></div>
+            <div style="position: relative;">
+                <div class="flag-marker-container">
+                    <img src="${flagUrl}" alt="${festival.country}">
+                </div>
+                <div class="genre-indicator" style="background-color: ${color};"></div>
             </div>
         `,
-        iconSize: [30, 25],
-        iconAnchor: [15, 12]
+        iconSize: [32, 32],
+        iconAnchor: [16, 16] // Centraliza o ícone
     });
 }
 
@@ -604,4 +636,5 @@ function getFestivalIcon(festival) {
     </script>
 </body>
 </html>
+
 
